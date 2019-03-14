@@ -1,0 +1,19 @@
+Package: TALYSeval
+Type: Package
+Title: TALYSeval: Prepare TALYS Calculations and Retrieve Results
+Version: 0.1.0
+Authors@R: c(person("Georg", "Schnabel", role = c("aut", "cre"),
+                    email = "georg.schnabel@nucleardata.com"))
+Author: Georg Schnabel [aut, cre]
+Maintainer: Georg Schnabel  <georg.schnabel@nucleardata.com>
+Depends:
+    R (>= 3.1.0)
+Description: Convenient preparation of TALYS calculations 
+    and retrieval of results in an R program. A parameter set
+    for a calculation is represented as a named list.
+    Results are converted to data tables.
+License: GPL (>=3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Suggests: testthat
