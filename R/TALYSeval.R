@@ -125,7 +125,10 @@ createModelTALYS <- function(initList = NULL) {
         parset[[lineidx[1]]] <<- curFilename
         NULL
       }, by=c("parname", "projectile")]
+      
       deleteLines <- dt[, list(lineidx = lineidx[-1]), by=c("parname", "projectile")]
+      if (length(deleteLines$lineidx) <= 0)
+          stop("at least two energy points for each energy-dependent parameter needed") 
       parset <- parset[-deleteLines$lineidx]
     }
 
