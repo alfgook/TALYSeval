@@ -195,6 +195,8 @@ createModelTALYS <- function(initList = NULL) {
         model$intern$getPartSpec(calcdir,reacstr,data,retfiles)
       else if (grepl("^CS/BINARY/([npdtha])/(L[0-9][0-9]|CON)$",reacstr))
         model$intern$getBinaryXS(calcdir,reacstr,data,retfiles)
+      else if (grepl("^CS/PROD/[[:digit:]]{6}/TOT$",reacstr))
+        model$intern$getProdXS(calcdir,reacstr,data,retfiles)
       else
         stop(paste0("cannot handle REAC = ", reacstr))
     }
@@ -427,6 +429,37 @@ createModelTALYS <- function(initList = NULL) {
       dim(xsdata) <- c(1, length(xsdata))
     return(xsdata)
   }
+
+  model$intern$getProdXS <- function(calcdir,reacstr,spec,retfiles=FALSE) {
+
+      residualCode <- regmatches(reacstr,regexec("^CS/PROD/([[:digit:]]{6})/TOT$",reacstr))[[1]][2]
+      stopifnot(!is.na(residualCode))
+
+      # construct filename for nuclide specification
+      xsfile <- paste0("rp",residualCode,".tot")
+
+      # if the residual is one of p,n,d,t,h,a
+      # we need special cases
+      if(residualCode=="001001") # proton
+        xsfile <- "pprod.tot"
+      if(residualCode=="000001") # neutron
+        xsfile <- "nprod.tot"
+      if(residualCode=="001002") # deuteron
+        xsfile <- "dprod.tot"
+      if(residualCode=="001003") # trition
+        xsfile <- "tprod.tot"
+      if(residualCode=="002003") # He-3
+        xsfile <- "hprod.tot"
+      if(residualCode=="002004") # alpha
+        xsfile <- "aprod.tot"
+
+      if (isTRUE(retfiles))
+        return(xsfile)
+      xsfile <- file.path(calcdir,xsfile)
+      # retrieve data
+      xsdata <- model$intern$readfixed(xsfile,c(1,13),c(12,24))
+      approxWithSnap(xsdata[,1],xsdata[,2],xout=spec[,L1])$y
+    }
 
 
   class(model) <- append(class(model),"model.TALYS")
